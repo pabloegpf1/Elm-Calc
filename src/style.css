@@ -1,7 +1,18 @@
 .calculator{
     margin: 12px;
-    height: 50px;
+    width: 50%;
     margin: auto;
     text-align: center;
     border: 3 px solid green;
+}
+
+button{
+    padding: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top:10px;
+}
+
+input{
+    padding: 20px;
 }
