@@ -4310,7 +4310,9 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$Main$initialModel = {lastOp: ' ', result: 0.0, value1: 0.0, value2: 0.0};
+var elm$core$Basics$False = {$: 'False'};
+var author$project$Main$initialModel = {hasComma: false, lastOp: ' ', value1: '0.0', value2: ''};
+var elm$core$Basics$True = {$: 'True'};
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$GT = {$: 'GT'};
 var elm$core$Basics$LT = {$: 'LT'};
@@ -4392,6 +4394,8 @@ var elm$core$Array$toList = function (array) {
 	return A3(elm$core$Array$foldr, elm$core$List$cons, _List_Nil, array);
 };
 var elm$core$Basics$add = _Basics_add;
+var elm$core$Basics$append = _Utils_append;
+var elm$core$Basics$eq = _Utils_equal;
 var elm$core$Basics$fdiv = _Basics_fdiv;
 var elm$core$Basics$mul = _Basics_mul;
 var elm$core$Basics$sub = _Basics_sub;
@@ -4408,65 +4412,100 @@ var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
 var elm$core$Maybe$Nothing = {$: 'Nothing'};
+var elm$core$String$fromFloat = _String_fromNumber;
 var elm$core$String$toFloat = _String_toFloat;
 var author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 'SetValue1':
+			case 'AddValue1':
 				var value = msg.a;
 				return _Utils_update(
 					model,
 					{
-						value1: A2(
-							elm$core$Maybe$withDefault,
-							0.0,
-							elm$core$String$toFloat(value))
+						value1: _Utils_ap(model.value1, value)
 					});
-			case 'SetValue2':
+			case 'AddValue2':
 				var value = msg.a;
 				return _Utils_update(
 					model,
 					{
-						value2: A2(
-							elm$core$Maybe$withDefault,
-							0.0,
-							elm$core$String$toFloat(value))
+						value2: _Utils_ap(model.value2, value)
+					});
+			case 'SetTo0':
+				return _Utils_update(
+					model,
+					{value1: '0.0', value2: '0.0'});
+			case 'AddComma':
+				return _Utils_update(
+					model,
+					{
+						hasComma: true,
+						value1: model.hasComma ? (model.value1 + ',') : model.value1
 					});
 			case 'Sum':
 				return _Utils_update(
 					model,
-					{lastOp: '+', result: model.value1 + model.value2});
+					{lastOp: '+', value1: '0.0', value2: model.value1});
 			case 'Sub':
 				return _Utils_update(
 					model,
-					{lastOp: '-', result: model.value1 - model.value2});
+					{lastOp: '-', value1: '0.0', value2: model.value1});
 			case 'Mul':
 				return _Utils_update(
 					model,
-					{lastOp: 'x', result: model.value1 * model.value2});
+					{lastOp: 'x', value1: '0.0', value2: model.value1});
+			case 'Div':
+				return _Utils_update(
+					model,
+					{lastOp: '/', value1: '0.0', value2: model.value1});
 			default:
 				return _Utils_update(
 					model,
-					{lastOp: '÷', result: model.value1 / model.value2});
+					{
+						value1: (model.lastOp === '+') ? elm$core$String$fromFloat(
+							A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value2)) + A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value1))) : ((model.lastOp === '-') ? elm$core$String$fromFloat(
+							A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value2)) - A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value1))) : ((model.lastOp === 'x') ? elm$core$String$fromFloat(
+							A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value2)) / A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value1))) : ((model.lastOp === '/') ? elm$core$String$fromFloat(
+							A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value2)) * A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toFloat(model.value1))) : '0.0')))
+					});
 		}
 	});
+var author$project$Main$AddComma = {$: 'AddComma'};
+var author$project$Main$AddValue1 = function (a) {
+	return {$: 'AddValue1', a: a};
+};
 var author$project$Main$Div = {$: 'Div'};
 var author$project$Main$Mul = {$: 'Mul'};
-var author$project$Main$SetValue1 = function (a) {
-	return {$: 'SetValue1', a: a};
-};
-var author$project$Main$SetValue2 = function (a) {
-	return {$: 'SetValue2', a: a};
-};
+var author$project$Main$Result = {$: 'Result'};
 var author$project$Main$Sub = {$: 'Sub'};
 var author$project$Main$Sum = {$: 'Sum'};
-var elm$core$Basics$append = _Utils_append;
-var elm$core$String$fromFloat = _String_fromNumber;
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
-var elm$core$Basics$False = {$: 'False'};
-var elm$core$Basics$True = {$: 'True'};
 var elm$core$Result$isOk = function (result) {
 	if (result.$ === 'Ok') {
 		return true;
@@ -4544,7 +4583,6 @@ var elm$core$Basics$apR = F2(
 	function (x, f) {
 		return f(x);
 	});
-var elm$core$Basics$eq = _Utils_equal;
 var elm$core$Tuple$first = function (_n0) {
 	var x = _n0.a;
 	return x;
@@ -5004,23 +5042,10 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$input,
 						_List_fromArray(
 							[
-								elm$html$Html$Events$onInput(author$project$Main$SetValue1),
-								elm$html$Html$Attributes$value(
-								elm$core$String$fromFloat(model.value1))
+								elm$html$Html$Events$onInput(author$project$Main$AddValue1),
+								elm$html$Html$Attributes$value(model.value1)
 							]),
-						_List_Nil),
-						elm$html$Html$text(model.lastOp),
-						A2(
-						elm$html$Html$input,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onInput(author$project$Main$SetValue2),
-								elm$html$Html$Attributes$value(
-								elm$core$String$fromFloat(model.value2))
-							]),
-						_List_Nil),
-						elm$html$Html$text(
-						' = ' + elm$core$String$fromFloat(model.result))
+						_List_Nil)
 					])),
 				A2(
 				elm$html$Html$div,
@@ -5031,11 +5056,12 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$button,
 						_List_fromArray(
 							[
+								elm$html$Html$Attributes$class('double'),
 								elm$html$Html$Events$onClick(author$project$Main$Sum)
 							]),
 						_List_fromArray(
 							[
-								elm$html$Html$text('+')
+								elm$html$Html$text('A/C')
 							])),
 						A2(
 						elm$html$Html$button,
@@ -5045,17 +5071,7 @@ var author$project$Main$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								elm$html$Html$text('-')
-							])),
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onClick(author$project$Main$Mul)
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('x')
+								elm$html$Html$text('+/-')
 							])),
 						A2(
 						elm$html$Html$button,
@@ -5066,6 +5082,191 @@ var author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('÷')
+							]))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('7'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('7')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('8'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('8')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('9'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('9')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(author$project$Main$Mul)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('x')
+							]))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('4'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('4')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('5'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('5')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('6'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('6')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(author$project$Main$Sub)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('-')
+							]))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('1'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('1')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('2'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('2')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('3'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('3')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(author$project$Main$Sum)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('+')
+							]))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(
+								author$project$Main$AddValue1('0'))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('0')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Events$onClick(author$project$Main$AddComma)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text(',')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('double'),
+								elm$html$Html$Events$onClick(author$project$Main$Result)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('=')
 							]))
 					]))
 			]));
