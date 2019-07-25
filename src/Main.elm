@@ -2,7 +2,7 @@ module Main exposing (Model, Msg(..), initialModel, update, view)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class, value)
 import Html.Events exposing (..)
 
 
@@ -66,10 +66,10 @@ update msg model =
             }
 
 
-view : Model -> Html Msg
+view : Model -> Html.Html Msg
 view model =
     div
-        []
+        [ class "calculator" ]
         [ div
             []
             [ input
@@ -91,7 +91,6 @@ view model =
         ]
 
 
-main : Program () Model Msg
 main =
     Browser.sandbox
         { init = initialModel
