@@ -1,4 +1,4 @@
-# Elm-Calc
+# Elm-Calc (Work In Progress)
 Simple calculator app using functional programming
 
 ## Try it!
